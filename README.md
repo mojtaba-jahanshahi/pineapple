@@ -5,6 +5,8 @@ Pineapple is a configuration server used in micro services environments.
 ## Features
     - Reads configurations from remote git repositories.
     - Support multiple applications/multiple profiles.
+    - Reloads configurations without restarting the server.
+    - Automatic scheduled upstream change check.
     - SSL/TLS support.
 
 ## Building the project
