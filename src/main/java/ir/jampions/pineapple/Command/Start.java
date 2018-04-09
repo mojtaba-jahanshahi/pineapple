@@ -18,33 +18,33 @@ public class Start {
     @Option(
             names = {"--uri"},
             required = true,
-            description = "the http(s) address of remote git repository"
+            description = "http(s) address of remote git repository"
     )
     public String uri;
 
     @Option(
             names = {"--remote"},
-            description = "the remote name used to keep track of the upstream repository"
+            description = "remote name to keep track of upstream repository"
     )
     public String remote = "origin";
 
     @Option(
             names = {"--branch"},
-            description = "the branch name to read configuration files from"
+            description = "branch name to read configuration files from"
     )
     public String branch = "master";
 
     @Option(
             names = {"--username"},
             required = true,
-            description = "the username that has access to remote git repository"
+            description = "username that has access to remote git repository"
     )
     public String username;
 
     @Option(
             names = {"--password"},
             required = true,
-            description = "the password of username that has access to remote git repository"
+            description = "the password of provided username"
     )
     public String password;
 
