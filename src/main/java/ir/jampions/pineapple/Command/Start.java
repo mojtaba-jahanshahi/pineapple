@@ -1,5 +1,7 @@
 package ir.jampions.pineapple.Command;
 
+import java.io.File;
+
 import static picocli.CommandLine.Command;
 import static picocli.CommandLine.Option;
 
@@ -15,6 +17,36 @@ import static picocli.CommandLine.Option;
         requiredOptionMarker = '*'
 )
 public class Start {
+    @Option(
+            names = {"-H", "--host"},
+            description = "the host name that server should listen on"
+    )
+    public String host = "localhost";
+
+    @Option(
+            names = {"-P", "--port"},
+            description = "the port number that server should listen on"
+    )
+    public int port = 9091;
+
+    @Option(
+            names = {"-S", "--ssl"},
+            description = "starting server with SSL/TLS enabled"
+    )
+    public boolean ssl = false;
+
+    @Option(
+            names = {"--cert"},
+            description = "certificate chain file in PEM format"
+    )
+    public File cert;
+
+    @Option(
+            names = {"--private-key"},
+            description = "private key file in PEM format"
+    )
+    public File pKey;
+
     @Option(
             names = {"--uri"},
             required = true,
