@@ -4,9 +4,8 @@ Pineapple is a configuration server used in micro services environments.
 
 ## Features
     - Reads configurations from remote git repositories.
-    - Support multiple applications/multiple profiles.
-    - Reloads configurations without restarting the server.
-    - Automatic scheduled upstream change check.
+    - Support multiple applications.
+    - Reloads configurations without restarting the server with automatic scheduled upstream change check.
     - SSL/TLS support.
 
 ## Building the project
@@ -37,6 +36,7 @@ starts the server with specified options
 ## SSL/TLS setup
 Copy and paste script/gencerts.sh script file on some appropriate directory (exp. ~/certs), then:
 ```
+$ chmod 777 gencerts.sh
 $ ./gencerts.sh
 ```
 
@@ -46,5 +46,5 @@ You can also use your own certificate files, for example generated let'sencrypt 
 
 Now start the server with options:
 ```
-$ ./pineapple -S --cert ~/certs/server.crt --private-key ~/certs/server.pem
+$ ./pineapple -S --cert ~/certs/server.crt --private-key ~/certs/server.pem (other options ...)
 ```
