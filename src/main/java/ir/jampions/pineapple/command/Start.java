@@ -1,4 +1,4 @@
-package ir.jampions.pineapple.Command;
+package ir.jampions.pineapple.command;
 
 import java.io.File;
 
@@ -8,7 +8,7 @@ import static picocli.CommandLine.Option;
 /**
  * Command line options that may be provided by a user to start the server.
  *
- * @author alirezapourtaghi
+ * @author Alireza Pourtaghi
  */
 @Command(
         description = "starts the server with specified options",

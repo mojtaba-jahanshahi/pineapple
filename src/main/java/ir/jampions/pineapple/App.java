@@ -3,11 +3,10 @@ package ir.jampions.pineapple;
 import com.github.lalyos.jfiglet.FigletFont;
 import io.grpc.Server;
 import io.grpc.netty.NettyServerBuilder;
-import ir.jampions.pineapple.Command.Start;
+import ir.jampions.pineapple.command.Start;
 import ir.jampions.pineapple.service.AutoClosableService;
 import ir.jampions.pineapple.service.GitService;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +14,13 @@ import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 
-import static picocli.CommandLine.*;
+import static picocli.CommandLine.populateCommand;
+import static picocli.CommandLine.usage;
 
 /**
  * Main class of the pineapple project.
  *
- * @author alirezapourtaghi
+ * @author Alireza Pourtaghi
  */
 public class App {
     private static Server server;
@@ -35,13 +35,12 @@ public class App {
                 usage(start, System.out);
             } else {
                 app.addShutdownHook();
-
                 app.printBanner();
                 app.gitService = app.initializeGitService(start);
-
                 server = app.startServer(start.host, start.port, start.ssl, start.cert, start.pKey);
-
                 app.checkServices();
+                System.out.println("[INFO]: server started successfully");
+                app.awaitTermination();
             }
         } catch (Exception e) {
             System.err.println(String.format("[ERROR]: %s", e.getMessage()));
@@ -53,9 +52,8 @@ public class App {
      *
      * @param args - list of command line arguments including options and parameters
      * @return command instance that populated by args
-     * @throws ParameterException - if error occurred while populating
      */
-    private Start parseCommandLineArguments(String[] args) throws CommandLine.ParameterException {
+    private Start parseCommandLineArguments(String[] args) {
         return populateCommand(new Start(), args);
     }
 
@@ -119,7 +117,7 @@ public class App {
      *
      * @param start - start command instance that populated by args
      * @return newly created git service
-     * @throws GitAPIException - if exception occurred in cloneRepository method
+     * @throws GitAPIException - if exception occurred while cloning repository
      */
     private GitService initializeGitService(Start start) throws GitAPIException {
         GitService gitService = new GitService(start.uri, start.remote, start.branch, start.username, start.password);
@@ -127,16 +125,17 @@ public class App {
         return gitService;
     }
 
+
     /**
      * Builds and starts a new gRPC server instance ready for dispatching incoming calls.
      *
+     * @param host           - host to listen on
      * @param port           - port number to listen on
      * @param ssl            - whether the server should start with ssl/tls or not
      * @param certChainFile  - certificate chain file in PEM format
      * @param privateKeyFile - private key file in PEM format
      * @return gRPC server instance
-     * @throws IllegalStateException - if already started
-     * @throws IOException           - if unable to bind
+     * @throws Exception - if start failed
      */
     private Server startServer(String host, int port, boolean ssl, File certChainFile, File privateKeyFile) throws Exception {
         if (ssl && certChainFile != null && privateKeyFile != null) {
@@ -145,16 +144,16 @@ public class App {
                     .forAddress(new InetSocketAddress(host, port))
                     .useTransportSecurity(certChainFile, privateKeyFile)
                     .executor(Executors.newWorkStealingPool());
-            addRpcServices(nettyServerBuilder);
+            //addRpcServices(nettyServerBuilder);
             return nettyServerBuilder
                     .build()
                     .start();
         } else {
-            System.err.println("[WARN]: starting server without ssl/tls enabled...");
+            System.err.println("[WARN]: starting server without ssl/tls ...");
             NettyServerBuilder nettyServerBuilder = NettyServerBuilder
                     .forAddress(new InetSocketAddress(host, port))
                     .executor(Executors.newWorkStealingPool());
-            addRpcServices(nettyServerBuilder);
+            //addRpcServices(nettyServerBuilder);
             return nettyServerBuilder
                     .build()
                     .start();
@@ -184,5 +183,14 @@ public class App {
                 throw new RuntimeException(e.getMessage());
             }
         });
+    }
+
+    /**
+     * Waits for the gRPC server to shutdown so this method blocks the main thread.
+     */
+    private void awaitTermination() throws InterruptedException {
+        if (server != null) {
+            server.awaitTermination();
+        }
     }
 }

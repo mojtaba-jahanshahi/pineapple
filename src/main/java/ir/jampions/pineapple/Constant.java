@@ -3,7 +3,7 @@ package ir.jampions.pineapple;
 /**
  * Some constant values that is used on this project.
  *
- * @author alirezapourtaghi
+ * @author Alireza Pourtaghi
  */
 public enum Constant {
     BANNER_TEXT("PINEAPPLE"),

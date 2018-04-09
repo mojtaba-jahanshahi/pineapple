@@ -3,9 +3,9 @@ package ir.jampions.pineapple.model;
 import java.util.Objects;
 
 /**
- * An application instance of remote git repository.
+ * An application instance mapped from a configuration file of remote git repository.
  *
- * @author alirezapourtaghi
+ * @author Alireza Pourtaghi
  */
 public class Application {
     private final String name;
@@ -29,12 +29,5 @@ public class Application {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    @Override
-    public String toString() {
-        return "Application{" +
-                "name='" + name + '\'' +
-                '}';
     }
 }

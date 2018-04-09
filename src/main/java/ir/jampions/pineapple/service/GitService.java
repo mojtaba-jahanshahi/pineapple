@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 /**
  * Git service implementation that provides access to remote git repository and other useful functionality.
  *
- * @author alirezapourtaghi
+ * @author Alireza Pourtaghi
  */
 public class GitService {
     private final String uri;
@@ -60,7 +60,9 @@ public class GitService {
         try (Git git = cloneCommand.call()) {
             File[] files = git.getRepository().getWorkTree().listFiles();
             if (files != null) {
-                Arrays.stream(files).filter(file -> !file.getName().equals(Constant.GIT_FILE.getValue())).forEach(file -> applications.putIfAbsent(new Application(file.getName()), extractProperties(file)));
+                Arrays.stream(files)
+                        .filter(file -> !file.getName().equals(Constant.GIT_FILE.getValue()))
+                        .forEach(file -> applications.putIfAbsent(new Application(file.getName()), extractProperties(file)));
             }
         }
     }

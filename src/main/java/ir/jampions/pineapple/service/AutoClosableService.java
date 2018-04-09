@@ -6,7 +6,7 @@ package ir.jampions.pineapple.service;
  * If your services need to close/cleanup resource(s) when the server is shutting down they must implement this interface to support automatic cleanup.
  * <p/>
  *
- * @author alirezapourtaghi
+ * @author Alireza Pourtaghi
  */
 public interface AutoClosableService {
 

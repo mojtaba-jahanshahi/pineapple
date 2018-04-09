@@ -4,9 +4,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * A property of a configuration file (or application instance).
+ * A property of an application instance (or configuration file).
  *
- * @author alirezapourtaghi
+ * @author Alireza Pourtaghi
  */
 public class Property {
     private final String key;
@@ -45,13 +45,5 @@ public class Property {
     @Override
     public int hashCode() {
         return Objects.hash(key);
-    }
-
-    @Override
-    public String toString() {
-        return "Property{" +
-                "key='" + key + '\'' +
-                ", value='" + value + '\'' +
-                '}';
     }
 }
