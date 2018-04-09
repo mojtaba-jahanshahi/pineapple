@@ -46,7 +46,7 @@ public class GitService {
     }
 
     /**
-     * Clones a remote git repository and extracts all available files for application specific properties.
+     * Clones a remote git repository and extracts all available files to read application specific properties.
      *
      * @throws GitAPIException - if exception occurred while cloning repository
      */
@@ -57,7 +57,6 @@ public class GitService {
                 .setBranch(branch)
                 .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
                 .setDirectory(new File(Constant.REPOSITORY_BASE_DIRECTORY.getValue() + username));
-
         try (Git git = cloneCommand.call()) {
             File[] files = git.getRepository().getWorkTree().listFiles();
             if (files != null) {
@@ -80,7 +79,6 @@ public class GitService {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .forEach(properties::add);
-
             return properties;
         } catch (IOException e) {
             throw new RuntimeException(e);

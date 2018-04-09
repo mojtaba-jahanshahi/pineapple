@@ -32,7 +32,7 @@ public class App {
             } else {
                 app.addShutdownHook();
 
-                app.printBanner(Constant.BANNER_TEXT.getValue());
+                app.printBanner();
                 app.gitService = app.initializeGitService(start);
 
                 app.checkServices();
@@ -51,44 +51,6 @@ public class App {
      */
     private Start parseCommandLineArguments(String[] args) throws CommandLine.ParameterException {
         return populateCommand(new Start(), args);
-    }
-
-    /**
-     * Prints the provided text as a banner when starting the server.
-     *
-     * @param bannerText - text of the banner
-     * @throws IOException - if error occurred while printing
-     */
-    private void printBanner(String bannerText) throws IOException {
-        System.out.println(FigletFont.convertOneLine(bannerText));
-    }
-
-    /**
-     * GitService initialization method.
-     *
-     * @param start - start command instance that populated by args
-     * @return newly created git service
-     */
-    private GitService initializeGitService(Start start) throws GitAPIException {
-        GitService gitService = new GitService(start.uri, start.remote, start.branch, start.username, start.password);
-        gitService.cloneRepository();
-        return gitService;
-    }
-
-    /**
-     * Tries to detect and check all services initialized so not equal to null.
-     */
-    private void checkServices() {
-        Arrays.stream(this.getClass().getDeclaredFields()).forEach(f -> {
-            try {
-                String nameOfField = f.getName();
-                if (nameOfField.contains("Service") && f.get(this) == null) {
-                    throw new RuntimeException(String.format("%s not initialized", nameOfField));
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        });
     }
 
     /**
@@ -135,5 +97,42 @@ public class App {
             System.out.println("[INFO]: shutting down the server ...");
             server.shutdown();
         }
+    }
+
+    /**
+     * Prints the provided text as a banner when starting the server.
+     *
+     * @throws IOException - if error occurred while printing
+     */
+    private void printBanner() throws IOException {
+        System.out.println(FigletFont.convertOneLine(Constant.BANNER_TEXT.getValue()));
+    }
+
+    /**
+     * GitService initialization method.
+     *
+     * @param start - start command instance that populated by args
+     * @return newly created git service
+     */
+    private GitService initializeGitService(Start start) throws GitAPIException {
+        GitService gitService = new GitService(start.uri, start.remote, start.branch, start.username, start.password);
+        gitService.cloneRepository();
+        return gitService;
+    }
+
+    /**
+     * Tries to detect and check all services initialized so not equal to null.
+     */
+    private void checkServices() {
+        Arrays.stream(this.getClass().getDeclaredFields()).forEach(f -> {
+            try {
+                String nameOfField = f.getName();
+                if (nameOfField.contains("Service") && f.get(this) == null) {
+                    throw new RuntimeException(String.format("%s not initialized", nameOfField));
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        });
     }
 }
