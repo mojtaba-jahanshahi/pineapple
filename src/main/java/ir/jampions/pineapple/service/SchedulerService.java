@@ -1,23 +1,29 @@
 package ir.jampions.pineapple.service;
 
 import ir.jampions.pineapple.Constant;
+import ir.jampions.pineapple.model.Application;
+import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A service to check changes on remote git repository in periodically.
+ * A service to check changes on remote git repository in periodic order.
  *
  * @author Alireza Pourtaghi
  */
 public class SchedulerService implements AutoClosableService {
+    private static final int POOL_SIZE = 1;
+
     private final ScheduledExecutorService scheduledExecutorService;
     private final GitService gitService;
 
     public SchedulerService(GitService gitService) {
-        this.scheduledExecutorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+        this.scheduledExecutorService = Executors.newScheduledThreadPool(POOL_SIZE);
         this.gitService = gitService;
     }
 
@@ -29,13 +35,18 @@ public class SchedulerService implements AutoClosableService {
                 () -> {
                     try {
                         if (gitService.getGit() != null) {
-                            System.out.println("[INFO]: pulling to check new changes ...");
-                            gitService.getGit()
+                            System.out.println("[INFO]: pulling to check new updates ...");
+                            PullResult pullResult = gitService.getGit()
                                     .pull()
                                     .setRemote(gitService.getRemote())
                                     .setRemoteBranchName(gitService.getBranch())
                                     .setCredentialsProvider(new UsernamePasswordCredentialsProvider(gitService.getUsername(), gitService.getPassword()))
                                     .call();
+                            if (pullResult.isSuccessful()) {
+                                updateApplications();
+                            } else {
+                                System.err.println("[ERROR]: git pull was not successful");
+                            }
                         } else {
                             System.err.println("[ERROR]: git repository has been closed");
                         }
@@ -47,6 +58,16 @@ public class SchedulerService implements AutoClosableService {
                 Integer.valueOf(Constant.SCHEDULER_PERIOD_IN_MINUTES.getValue()),
                 TimeUnit.MINUTES
         );
+    }
+
+    private void updateApplications() {
+        File[] files = gitService.getGit().getRepository().getWorkTree().listFiles();
+        if (files != null) {
+            gitService.getApplications().clear();
+            Arrays.stream(files)
+                    .filter(file -> !file.getName().equals(Constant.GIT_FILE_EXTENSION.getValue()))
+                    .forEach(file -> gitService.getApplications().putIfAbsent(new Application(file.getName()), Util.extractProperties(file)));
+        }
     }
 
     @Override

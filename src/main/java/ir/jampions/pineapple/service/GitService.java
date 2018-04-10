@@ -1,6 +1,5 @@
 package ir.jampions.pineapple.service;
 
-import io.netty.util.internal.ConcurrentSet;
 import ir.jampions.pineapple.Constant;
 import ir.jampions.pineapple.model.Application;
 import ir.jampions.pineapple.model.Property;
@@ -10,12 +9,9 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 /**
  * Git service implementation that provides access to remote git repository and other useful functionality.
@@ -31,7 +27,7 @@ public class GitService implements AutoClosableService {
     private final String username;
     private final String password;
 
-    private final ConcurrentHashMap<Application, ConcurrentSet<Property>> applications;
+    private final ConcurrentHashMap<Application, HashSet<Property>> applications;
 
     public GitService(String uri, String remote, String branch, String username, String password) {
         this.uri = uri;
@@ -67,7 +63,7 @@ public class GitService implements AutoClosableService {
         return password;
     }
 
-    public ConcurrentHashMap<Application, ConcurrentSet<Property>> getApplications() {
+    public ConcurrentHashMap<Application, HashSet<Property>> getApplications() {
         return applications;
     }
 
@@ -88,27 +84,7 @@ public class GitService implements AutoClosableService {
         if (files != null) {
             Arrays.stream(files)
                     .filter(file -> !file.getName().equals(Constant.GIT_FILE_EXTENSION.getValue()))
-                    .forEach(file -> applications.putIfAbsent(new Application(file.getName()), extractProperties(file)));
-        }
-    }
-
-    /**
-     * Extracts all defined properties that are in specified file.
-     *
-     * @param file - the file that contains properties, one at a line
-     * @return thread safe set containing all properties extracted from a file
-     */
-    private ConcurrentSet<Property> extractProperties(File file) {
-        ConcurrentSet<Property> properties = new ConcurrentSet<>();
-        try (Stream<String> lines = Files.lines(file.toPath())) {
-            lines.filter(line -> !line.isEmpty())
-                    .map(Property::parse)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .forEach(properties::add);
-            return properties;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                    .forEach(file -> applications.putIfAbsent(new Application(file.getName()), Util.extractProperties(file)));
         }
     }
 
