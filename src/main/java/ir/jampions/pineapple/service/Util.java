@@ -9,6 +9,11 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * Utility methods for use in services.
+ *
+ * @author Alireza Pourtaghi
+ */
 class Util {
 
     /**
