@@ -20,13 +20,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class GitService implements AutoClosableService {
     private Git git;
-
     private final String uri;
     private final String remote;
     private final String branch;
     private final String username;
     private final String password;
-
     private final ConcurrentHashMap<Application, HashSet<Property>> applications;
 
     public GitService(String uri, String remote, String branch, String username, String password) {
@@ -35,7 +33,6 @@ public class GitService implements AutoClosableService {
         this.branch = branch;
         this.username = username;
         this.password = password;
-
         this.applications = new ConcurrentHashMap<>();
     }
 
@@ -63,10 +60,6 @@ public class GitService implements AutoClosableService {
         return password;
     }
 
-    public ConcurrentHashMap<Application, HashSet<Property>> getApplications() {
-        return applications;
-    }
-
     /**
      * Clones a remote git repository and extracts all available files to read application specific properties.
      *
@@ -86,6 +79,29 @@ public class GitService implements AutoClosableService {
                     .filter(file -> !file.getName().equals(Constant.GIT_FILE_EXTENSION.getValue()))
                     .forEach(file -> applications.putIfAbsent(new Application(file.getName()), Util.extractProperties(file)));
         }
+    }
+
+    /**
+     * Updates all existing applications or adds new ones.
+     */
+    public void updateApplications() {
+        File[] files = git.getRepository().getWorkTree().listFiles();
+        if (files != null) {
+            applications.clear();
+            Arrays.stream(files)
+                    .filter(file -> !file.getName().equals(Constant.GIT_FILE_EXTENSION.getValue()))
+                    .forEach(file -> applications.putIfAbsent(new Application(file.getName()), Util.extractProperties(file)));
+        }
+    }
+
+    /**
+     * Loads all properties of a specific application.
+     *
+     * @param application - the application name
+     * @return a set of all valid properties or null if application does not exists
+     */
+    public HashSet<Property> loadProperties(String application) {
+        return applications.computeIfPresent(new Application(application), (k, v) -> v);
     }
 
     @Override

@@ -12,7 +12,8 @@ public enum Constant {
     GIT_FILE_EXTENSION(".git"),
     SCHEDULER_POOL_SIZE("1"),
     SCHEDULER_INITIAL_DELAY_IN_MINUTES("5"),
-    SCHEDULER_PERIOD_IN_MINUTES("5");
+    SCHEDULER_PERIOD_IN_MINUTES("5"),
+    RPC_ACCESS_KEY_VALUE("rpcAccessKey");
 
     private String value;
 

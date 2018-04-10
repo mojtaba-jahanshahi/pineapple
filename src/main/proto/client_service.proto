@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_package = "ir.jampions.pineapple.rpc";
+
+import "base.proto";
+
+service Client {
+    rpc Echo (Message) returns (Message) {}
+    rpc LoadContext (LoadContextRequest) returns (LoadContextResponse) {}
+}
+
+message LoadContextRequest {
+    string accessKey = 1;
+    string name = 2;
+}
+
+message LoadContextResponse {
+    repeated Property property = 1;
+}
+
+message Property {
+    string key = 1;
+    string value = 2;
+}

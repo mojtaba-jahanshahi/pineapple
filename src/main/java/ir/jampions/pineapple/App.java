@@ -4,6 +4,7 @@ import com.github.lalyos.jfiglet.FigletFont;
 import io.grpc.Server;
 import io.grpc.netty.NettyServerBuilder;
 import ir.jampions.pineapple.command.Start;
+import ir.jampions.pineapple.rpc.ClientRpc;
 import ir.jampions.pineapple.service.AutoClosableService;
 import ir.jampions.pineapple.service.GitService;
 import ir.jampions.pineapple.service.SchedulerService;
@@ -161,7 +162,7 @@ public class App {
                     .forAddress(new InetSocketAddress(host, port))
                     .useTransportSecurity(certChainFile, privateKeyFile)
                     .executor(Executors.newWorkStealingPool());
-            //addRpcServices(nettyServerBuilder);
+            addRpcServices(nettyServerBuilder);
             return nettyServerBuilder
                     .build()
                     .start();
@@ -170,7 +171,7 @@ public class App {
             NettyServerBuilder nettyServerBuilder = NettyServerBuilder
                     .forAddress(new InetSocketAddress(host, port))
                     .executor(Executors.newWorkStealingPool());
-            //addRpcServices(nettyServerBuilder);
+            addRpcServices(nettyServerBuilder);
             return nettyServerBuilder
                     .build()
                     .start();
@@ -183,7 +184,7 @@ public class App {
      * @param nettyServerBuilder - the server builder
      */
     private void addRpcServices(NettyServerBuilder nettyServerBuilder) {
-
+        nettyServerBuilder.addService(new ClientRpc(gitService));
     }
 
     /**

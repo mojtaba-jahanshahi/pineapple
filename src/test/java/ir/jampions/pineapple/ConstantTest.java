@@ -15,5 +15,6 @@ public class ConstantTest {
         assertEquals(new Integer(1), Integer.valueOf(Constant.SCHEDULER_POOL_SIZE.getValue()));
         assertEquals(new Integer(5), Integer.valueOf(Constant.SCHEDULER_INITIAL_DELAY_IN_MINUTES.getValue()));
         assertEquals(new Integer(5), Integer.valueOf(Constant.SCHEDULER_PERIOD_IN_MINUTES.getValue()));
+        assertEquals("rpcAccessKey", Constant.RPC_ACCESS_KEY_VALUE.getValue());
     }
 }
