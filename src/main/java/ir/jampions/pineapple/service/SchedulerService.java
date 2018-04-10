@@ -17,13 +17,11 @@ import java.util.concurrent.TimeUnit;
  * @author Alireza Pourtaghi
  */
 public class SchedulerService implements AutoClosableService {
-    private static final int POOL_SIZE = 1;
-
     private final ScheduledExecutorService scheduledExecutorService;
     private final GitService gitService;
 
     public SchedulerService(GitService gitService) {
-        this.scheduledExecutorService = Executors.newScheduledThreadPool(POOL_SIZE);
+        this.scheduledExecutorService = Executors.newScheduledThreadPool(Integer.valueOf(Constant.SCHEDULER_POOL_SIZE.getValue()));
         this.gitService = gitService;
     }
 
@@ -60,6 +58,9 @@ public class SchedulerService implements AutoClosableService {
         );
     }
 
+    /**
+     * Updates all existing applications or adds new ones.
+     */
     private void updateApplications() {
         File[] files = gitService.getGit().getRepository().getWorkTree().listFiles();
         if (files != null) {

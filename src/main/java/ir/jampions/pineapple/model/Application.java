@@ -30,4 +30,11 @@ public class Application {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    @Override
+    public String toString() {
+        return "Application{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }
