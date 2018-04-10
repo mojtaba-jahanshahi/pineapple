@@ -22,7 +22,9 @@ import java.util.stream.Stream;
  *
  * @author Alireza Pourtaghi
  */
-public class GitService {
+public class GitService implements AutoClosableService {
+    private Git git;
+
     private final String uri;
     private final String remote;
     private final String branch;
@@ -41,6 +43,30 @@ public class GitService {
         this.applications = new ConcurrentHashMap<>();
     }
 
+    Git getGit() {
+        return git;
+    }
+
+    String getUri() {
+        return uri;
+    }
+
+    String getRemote() {
+        return remote;
+    }
+
+    String getBranch() {
+        return branch;
+    }
+
+    String getUsername() {
+        return username;
+    }
+
+    String getPassword() {
+        return password;
+    }
+
     public ConcurrentHashMap<Application, ConcurrentSet<Property>> getApplications() {
         return applications;
     }
@@ -50,20 +76,19 @@ public class GitService {
      *
      * @throws GitAPIException - if exception occurred while cloning repository
      */
-    public void cloneRepository() throws GitAPIException {
+    public void start() throws GitAPIException {
         CloneCommand cloneCommand = Git.cloneRepository()
                 .setURI(uri)
                 .setRemote(remote)
                 .setBranch(branch)
                 .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
-                .setDirectory(new File(Constant.REPOSITORY_BASE_DIRECTORY.getValue() + username));
-        try (Git git = cloneCommand.call()) {
-            File[] files = git.getRepository().getWorkTree().listFiles();
-            if (files != null) {
-                Arrays.stream(files)
-                        .filter(file -> !file.getName().equals(Constant.GIT_FILE.getValue()))
-                        .forEach(file -> applications.putIfAbsent(new Application(file.getName()), extractProperties(file)));
-            }
+                .setDirectory(new File(Constant.REPOSITORY_BASE_DIRECTORY.getValue() + System.currentTimeMillis()));
+        git = cloneCommand.call();
+        File[] files = git.getRepository().getWorkTree().listFiles();
+        if (files != null) {
+            Arrays.stream(files)
+                    .filter(file -> !file.getName().equals(Constant.GIT_FILE_EXTENSION.getValue()))
+                    .forEach(file -> applications.putIfAbsent(new Application(file.getName()), extractProperties(file)));
         }
     }
 
@@ -84,6 +109,14 @@ public class GitService {
             return properties;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void close() {
+        System.out.println("[INFO]: closing git service ...");
+        if (git != null) {
+            git.close();
         }
     }
 }

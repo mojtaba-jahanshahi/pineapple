@@ -6,6 +6,7 @@ import io.grpc.netty.NettyServerBuilder;
 import ir.jampions.pineapple.command.Start;
 import ir.jampions.pineapple.service.AutoClosableService;
 import ir.jampions.pineapple.service.GitService;
+import ir.jampions.pineapple.service.SchedulerService;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
@@ -23,8 +24,9 @@ import static picocli.CommandLine.usage;
  * @author Alireza Pourtaghi
  */
 public class App {
-    private static Server server;
     private GitService gitService;
+    private SchedulerService schedulerService;
+    private static Server server;
 
     public static void main(String[] args) {
         App app = new App();
@@ -37,13 +39,17 @@ public class App {
                 app.addShutdownHook();
                 app.printBanner();
                 app.gitService = app.initializeGitService(start);
-                server = app.startServer(start.host, start.port, start.ssl, start.cert, start.pKey);
+                app.schedulerService = app.initializeSchedulerService(app.gitService);
                 app.checkServices();
+
+                server = app.startServer(start.host, start.port, start.ssl, start.cert, start.pKey);
                 System.out.println("[INFO]: server started successfully");
+
                 app.awaitTermination();
             }
         } catch (Exception e) {
             System.err.println(String.format("[ERROR]: %s", e.getMessage()));
+            app.closeAutoClosableServices();
         }
     }
 
@@ -121,10 +127,21 @@ public class App {
      */
     private GitService initializeGitService(Start start) throws GitAPIException {
         GitService gitService = new GitService(start.uri, start.remote, start.branch, start.username, start.password);
-        gitService.cloneRepository();
+        gitService.start();
         return gitService;
     }
 
+    /**
+     * SchedulerService initialization method.
+     *
+     * @param gitService - initialized git service to use its methods on scheduler service
+     * @return newly created scheduler service
+     */
+    private SchedulerService initializeSchedulerService(GitService gitService) {
+        SchedulerService schedulerService = new SchedulerService(gitService);
+        schedulerService.start();
+        return schedulerService;
+    }
 
     /**
      * Builds and starts a new gRPC server instance ready for dispatching incoming calls.
