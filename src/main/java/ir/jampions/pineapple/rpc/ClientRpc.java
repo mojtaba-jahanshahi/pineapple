@@ -33,21 +33,34 @@ public class ClientRpc extends ClientGrpc.ClientImplBase {
             Optional<Property> rpcAccessKey = properties.stream().filter(property -> property.getKey().equals(Constant.RPC_ACCESS_KEY_VALUE.getValue())).findFirst();
             if (rpcAccessKey.isPresent()) {
                 if (rpcAccessKey.get().getValue().equals(request.getAccessKey())) {
-                    ClientService.LoadContextResponse.Builder responseBuilder = ClientService.LoadContextResponse.newBuilder();
-                    properties.forEach(property -> responseBuilder.addProperty(ClientService.Property.newBuilder().setKey(property.getKey()).setValue(property.getValue()).build()));
-                    responseObserver.onNext(responseBuilder.build());
+                    responseObserver.onNext(buildLoadContext(properties));
                     responseObserver.onCompleted();
                 } else {
                     responseObserver.onError(Util.unauthenticatedError());
                 }
             } else {
-                ClientService.LoadContextResponse.Builder responseBuilder = ClientService.LoadContextResponse.newBuilder();
-                properties.forEach(property -> responseBuilder.addProperty(ClientService.Property.newBuilder().setKey(property.getKey()).setValue(property.getValue()).build()));
-                responseObserver.onNext(responseBuilder.build());
+                responseObserver.onNext(buildLoadContext(properties));
                 responseObserver.onCompleted();
             }
         } else {
             responseObserver.onError(Util.notFoundError());
         }
+    }
+
+    /**
+     * Builds a new LoadContextResponse.
+     *
+     * @param properties - properties of a context that should be loaded for response
+     * @return a newly created and loaded context
+     */
+    private ClientService.LoadContextResponse buildLoadContext(HashSet<Property> properties) {
+        ClientService.LoadContextResponse.Builder responseBuilder = ClientService.LoadContextResponse.newBuilder();
+        properties.forEach(property -> responseBuilder.addProperty(
+                ClientService.Property.newBuilder()
+                        .setKey(property.getKey())
+                        .setValue(property.getValue())
+                        .build()
+        ));
+        return responseBuilder.build();
     }
 }

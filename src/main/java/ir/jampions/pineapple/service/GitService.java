@@ -75,23 +75,30 @@ public class GitService implements AutoClosableService {
         git = cloneCommand.call();
         File[] files = git.getRepository().getWorkTree().listFiles();
         if (files != null) {
-            Arrays.stream(files)
-                    .filter(file -> !file.getName().equals(Constant.GIT_FILE_EXTENSION.getValue()))
-                    .forEach(file -> applications.putIfAbsent(new Application(file.getName()), Util.extractProperties(file)));
+            addApplications(files);
         }
     }
 
     /**
-     * Updates all existing applications or adds new ones.
+     * First clears the list of current apps and then adds new work tree files to applications.
      */
     public void updateApplications() {
         File[] files = git.getRepository().getWorkTree().listFiles();
         if (files != null) {
             applications.clear();
-            Arrays.stream(files)
-                    .filter(file -> !file.getName().equals(Constant.GIT_FILE_EXTENSION.getValue()))
-                    .forEach(file -> applications.putIfAbsent(new Application(file.getName()), Util.extractProperties(file)));
+            addApplications(files);
         }
+    }
+
+    /**
+     * Adds work tree files to applications.
+     *
+     * @param files - list of work tree files
+     */
+    private void addApplications(File[] files) {
+        Arrays.stream(files)
+                .filter(file -> !file.getName().equals(Constant.GIT_FILE_EXTENSION.getValue()))
+                .forEach(file -> applications.putIfAbsent(new Application(file.getName()), Util.extractProperties(file)));
     }
 
     /**
