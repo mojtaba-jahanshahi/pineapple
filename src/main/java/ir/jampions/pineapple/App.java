@@ -39,7 +39,7 @@ public class App {
             } else {
                 app.addShutdownHook();
                 app.printBanner();
-                app.gitService = app.initializeGitService(start);
+                app.gitService = app.initializeGitService(start.uri, start.remote, start.branch, start.username, start.password);
                 app.schedulerService = app.initializeSchedulerService(app.gitService);
                 app.checkServices();
 
@@ -122,12 +122,16 @@ public class App {
     /**
      * GitService initialization method.
      *
-     * @param start - start command instance that populated by args
+     * @param uri      - http(s) address of remote git repository
+     * @param remote   - remote name to keep track of upstream repository
+     * @param branch   - branch name to read configuration files from
+     * @param username - username that has access to remote git repository
+     * @param password - the password of provided username
      * @return newly created git service
      * @throws GitAPIException - if exception occurred while cloning repository
      */
-    private GitService initializeGitService(Start start) throws GitAPIException {
-        GitService gitService = new GitService(start.uri, start.remote, start.branch, start.username, start.password);
+    private GitService initializeGitService(String uri, String remote, String branch, String username, String password) throws GitAPIException {
+        GitService gitService = new GitService(uri, remote, branch, username, password);
         gitService.start();
         return gitService;
     }
