@@ -1,4 +1,4 @@
-package ir.jampions.pineapple.model;
+package ir.poolito.pineapple.model;
 
 import java.util.Objects;
 
@@ -7,7 +7,7 @@ import java.util.Objects;
  *
  * @author Alireza Pourtaghi
  */
-public class Application {
+public final class Application {
     private final String name;
 
     public Application(String name) {

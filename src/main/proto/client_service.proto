@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option java_package = "ir.jampions.pineapple.rpc";
+option java_package = "ir.poolito.pineapple.rpc";
 
 import "base.proto";
 

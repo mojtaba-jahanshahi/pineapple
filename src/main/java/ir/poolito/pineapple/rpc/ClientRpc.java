@@ -1,9 +1,9 @@
-package ir.jampions.pineapple.rpc;
+package ir.poolito.pineapple.rpc;
 
 import io.grpc.stub.StreamObserver;
-import ir.jampions.pineapple.Constant;
-import ir.jampions.pineapple.model.Property;
-import ir.jampions.pineapple.service.GitService;
+import ir.poolito.pineapple.AppConstant;
+import ir.poolito.pineapple.model.Property;
+import ir.poolito.pineapple.service.GitService;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -30,7 +30,7 @@ public class ClientRpc extends ClientGrpc.ClientImplBase {
     public void loadContext(ClientService.LoadContextRequest request, StreamObserver<ClientService.LoadContextResponse> responseObserver) {
         HashSet<Property> properties = gitService.loadProperties(request.getName());
         if (properties != null) {
-            Optional<Property> rpcAccessKey = properties.stream().filter(property -> property.getKey().equals(Constant.RPC_ACCESS_KEY_VALUE.getValue())).findFirst();
+            Optional<Property> rpcAccessKey = properties.stream().filter(property -> property.getKey().equals(AppConstant.RPC_ACCESS_KEY_VALUE.getValue())).findFirst();
             if (rpcAccessKey.isPresent()) {
                 if (rpcAccessKey.get().getValue().equals(request.getAccessKey())) {
                     responseObserver.onNext(buildLoadContext(properties));

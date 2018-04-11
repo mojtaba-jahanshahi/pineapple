@@ -1,11 +1,11 @@
-package ir.jampions.pineapple;
+package ir.poolito.pineapple;
 
 /**
  * Some constant values that is used on this project.
  *
  * @author Alireza Pourtaghi
  */
-public enum Constant {
+public enum AppConstant {
     BANNER_TEXT("PINEAPPLE"),
     AUTO_CLOSABLE_CLEANUP_METHOD_NAME("close"),
     REPOSITORY_BASE_DIRECTORY("/tmp/"),
@@ -17,7 +17,7 @@ public enum Constant {
 
     private String value;
 
-    Constant(String value) {
+    AppConstant(String value) {
         this.value = value;
     }
 

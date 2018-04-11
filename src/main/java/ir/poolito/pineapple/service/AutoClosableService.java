@@ -1,4 +1,4 @@
-package ir.jampions.pineapple.service;
+package ir.poolito.pineapple.service;
 
 /**
  * An automatic cleanup service interface.

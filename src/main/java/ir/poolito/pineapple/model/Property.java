@@ -1,4 +1,4 @@
-package ir.jampions.pineapple.model;
+package ir.poolito.pineapple.model;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import java.util.Optional;
  *
  * @author Alireza Pourtaghi
  */
-public class Property {
+public final class Property {
     private final String key;
     private final String value;
 

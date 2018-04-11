@@ -1,8 +1,8 @@
-package ir.jampions.pineapple.service;
+package ir.poolito.pineapple.service;
 
-import ir.jampions.pineapple.Constant;
-import ir.jampions.pineapple.model.Application;
-import ir.jampions.pineapple.model.Property;
+import ir.poolito.pineapple.AppConstant;
+import ir.poolito.pineapple.model.Application;
+import ir.poolito.pineapple.model.Property;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -71,7 +71,7 @@ public class GitService implements AutoClosableService {
                 .setRemote(remote)
                 .setBranch(branch)
                 .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
-                .setDirectory(new File(Constant.REPOSITORY_BASE_DIRECTORY.getValue() + System.currentTimeMillis()));
+                .setDirectory(new File(AppConstant.REPOSITORY_BASE_DIRECTORY.getValue() + System.currentTimeMillis()));
         git = cloneCommand.call();
         File[] files = git.getRepository().getWorkTree().listFiles();
         if (files != null) {
@@ -97,7 +97,7 @@ public class GitService implements AutoClosableService {
      */
     private void addApplications(File[] files) {
         Arrays.stream(files)
-                .filter(file -> !file.getName().equals(Constant.GIT_FILE_EXTENSION.getValue()))
+                .filter(file -> !file.getName().equals(AppConstant.GIT_FILE_EXTENSION.getValue()))
                 .forEach(file -> applications.putIfAbsent(new Application(file.getName()), Util.extractProperties(file)));
     }
 

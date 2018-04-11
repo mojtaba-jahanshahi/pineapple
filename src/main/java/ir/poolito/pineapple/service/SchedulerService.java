@@ -1,6 +1,6 @@
-package ir.jampions.pineapple.service;
+package ir.poolito.pineapple.service;
 
-import ir.jampions.pineapple.Constant;
+import ir.poolito.pineapple.AppConstant;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
@@ -18,7 +18,7 @@ public class SchedulerService implements AutoClosableService {
     private final GitService gitService;
 
     public SchedulerService(GitService gitService) {
-        this.scheduledExecutorService = Executors.newScheduledThreadPool(Integer.valueOf(Constant.SCHEDULER_POOL_SIZE.getValue()));
+        this.scheduledExecutorService = Executors.newScheduledThreadPool(Integer.valueOf(AppConstant.SCHEDULER_POOL_SIZE.getValue()));
         this.gitService = gitService;
     }
 
@@ -45,8 +45,8 @@ public class SchedulerService implements AutoClosableService {
                         System.err.println(String.format("[ERROR]: %s", e.getMessage()));
                     }
                 },
-                Integer.valueOf(Constant.SCHEDULER_INITIAL_DELAY_IN_MINUTES.getValue()),
-                Integer.valueOf(Constant.SCHEDULER_PERIOD_IN_MINUTES.getValue()),
+                Integer.valueOf(AppConstant.SCHEDULER_INITIAL_DELAY_IN_MINUTES.getValue()),
+                Integer.valueOf(AppConstant.SCHEDULER_PERIOD_IN_MINUTES.getValue()),
                 TimeUnit.MINUTES
         );
     }

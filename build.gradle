@@ -3,15 +3,15 @@ plugins {
     id 'application'
     id 'idea'
 
-    id 'com.google.protobuf' version '0.8.5'
     id 'com.google.osdetector' version '1.4.0'
+    id 'com.google.protobuf' version '0.8.5'
 }
 
-group = 'ir.jampions'
+group = 'ir.poolito'
 version = '0.0.1'
 description = 'Configuration server based on gRPC'
 
-mainClassName = 'ir.jampions.pineapple.App'
+mainClassName = 'ir.poolito.pineapple.App'
 
 dependencies {
     compile 'com.google.guava:guava:23.0'

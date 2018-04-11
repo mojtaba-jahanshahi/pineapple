@@ -1,6 +1,6 @@
-package ir.jampions.pineapple.service;
+package ir.poolito.pineapple.service;
 
-import ir.jampions.pineapple.model.Property;
+import ir.poolito.pineapple.model.Property;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  *
  * @author Alireza Pourtaghi
  */
-class Util {
+final class Util {
 
     /**
      * Extracts all defined properties that are in specified file.

@@ -1,4 +1,4 @@
-package ir.jampions.pineapple.rpc;
+package ir.poolito.pineapple.rpc;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -8,7 +8,7 @@ import io.grpc.StatusRuntimeException;
  *
  * @author Alireza Pourtaghi
  */
-class Util {
+final class Util {
 
     /**
      * Creates a status exception to notify clients (stubs) that the request is not authenticated.

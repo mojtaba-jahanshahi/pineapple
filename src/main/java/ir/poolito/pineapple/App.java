@@ -1,13 +1,13 @@
-package ir.jampions.pineapple;
+package ir.poolito.pineapple;
 
 import com.github.lalyos.jfiglet.FigletFont;
 import io.grpc.Server;
 import io.grpc.netty.NettyServerBuilder;
-import ir.jampions.pineapple.command.Start;
-import ir.jampions.pineapple.rpc.ClientRpc;
-import ir.jampions.pineapple.service.AutoClosableService;
-import ir.jampions.pineapple.service.GitService;
-import ir.jampions.pineapple.service.SchedulerService;
+import ir.poolito.pineapple.command.Start;
+import ir.poolito.pineapple.rpc.ClientRpc;
+import ir.poolito.pineapple.service.AutoClosableService;
+import ir.poolito.pineapple.service.GitService;
+import ir.poolito.pineapple.service.SchedulerService;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
@@ -86,7 +86,7 @@ public class App {
         Arrays.stream(this.getClass().getDeclaredFields()).forEach(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
             if (i.getName().equals(AutoClosableService.class.getName())) {
                 Arrays.stream(i.getMethods()).forEach(m -> {
-                    if (m.getName().equals(Constant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
+                    if (m.getName().equals(AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
                         try {
                             if (f.get(this) != null) {
                                 m.invoke(f.get(this));
@@ -116,7 +116,7 @@ public class App {
      * @throws IOException - if error occurred while printing
      */
     private void printBanner() throws IOException {
-        System.out.println(FigletFont.convertOneLine(Constant.BANNER_TEXT.getValue()));
+        System.out.println(FigletFont.convertOneLine(AppConstant.BANNER_TEXT.getValue()));
     }
 
     /**

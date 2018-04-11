@@ -1,4 +1,4 @@
-package ir.jampions.pineapple.model;
+package ir.poolito.pineapple.model;
 
 import org.junit.Test;
 
