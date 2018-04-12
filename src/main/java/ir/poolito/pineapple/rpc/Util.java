@@ -20,7 +20,7 @@ final class Util {
     }
 
     /**
-     * Creates a status exception to notify clients (stubs) that resource or entity not found.
+     * Creates a status exception to notify clients (stubs) that requested resource or entity not found.
      *
      * @return a runtime status exception of gRPC framework
      */

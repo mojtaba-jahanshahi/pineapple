@@ -1,6 +1,6 @@
 # Pineapple
 
-Pineapple is a configuration server used in micro services environment.
+A configuration server used in micro services environment.
 
 ## Features
     - Reads configurations from remote git repositories.
@@ -48,7 +48,6 @@ Copy and paste script/gencert.sh script file on some appropriate directory (exp.
 $ chmod 777 gencert.sh
 $ ./gencert.sh
 ```
-
 NOTE: Change the password value on gencert.sh!
 
 You can also use your own certificate files, for example generated let'sencrypt certificate for your domain in PEM format.

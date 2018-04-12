@@ -1,7 +1,7 @@
 package ir.poolito.pineapple.service;
 
 /**
- * An automatic cleanup service interface.
+ * An automatic service cleanup interface.
  * <p>
  * If your services need to close/cleanup resource(s) when the server is shutting down they must implement this interface to support automatic cleanup.
  * <p/>

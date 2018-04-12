@@ -33,13 +33,13 @@ public class ClientRpc extends ClientGrpc.ClientImplBase {
             Optional<Property> rpcAccessKey = properties.stream().filter(property -> property.getKey().equals(AppConstant.RPC_ACCESS_KEY_VALUE.getValue())).findFirst();
             if (rpcAccessKey.isPresent()) {
                 if (rpcAccessKey.get().getValue().equals(request.getAccessKey())) {
-                    responseObserver.onNext(buildLoadContext(properties));
+                    responseObserver.onNext(buildLoadContextResponse(properties));
                     responseObserver.onCompleted();
                 } else {
                     responseObserver.onError(Util.unauthenticatedError());
                 }
             } else {
-                responseObserver.onNext(buildLoadContext(properties));
+                responseObserver.onNext(buildLoadContextResponse(properties));
                 responseObserver.onCompleted();
             }
         } else {
@@ -51,9 +51,9 @@ public class ClientRpc extends ClientGrpc.ClientImplBase {
      * Builds a new LoadContextResponse.
      *
      * @param properties - properties of a context that should be loaded for response
-     * @return a newly created and loaded context
+     * @return a newly created and also loaded context
      */
-    private ClientService.LoadContextResponse buildLoadContext(HashSet<Property> properties) {
+    private ClientService.LoadContextResponse buildLoadContextResponse(HashSet<Property> properties) {
         ClientService.LoadContextResponse.Builder responseBuilder = ClientService.LoadContextResponse.newBuilder();
         properties.forEach(property -> responseBuilder.addProperty(
                 ClientService.Property.newBuilder()

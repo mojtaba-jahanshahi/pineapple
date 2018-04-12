@@ -53,8 +53,8 @@ public class SchedulerService implements AutoClosableService {
 
     @Override
     public void close() {
-        System.out.println("[INFO]: closing scheduler service ...");
         if (scheduledExecutorService != null) {
+            System.out.println("[INFO]: closing scheduler service ...");
             scheduledExecutorService.shutdown();
         }
     }
