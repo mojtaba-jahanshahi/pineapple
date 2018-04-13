@@ -1,6 +1,9 @@
 syntax = "proto3";
 
-option java_package = "ir.poolito.pineapple.rpc";
+option java_package = "ir.poolito.rpc";
+
+message Empty {
+}
 
 message Message {
     string content = 1;

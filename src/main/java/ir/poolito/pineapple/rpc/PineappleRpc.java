@@ -4,6 +4,9 @@ import io.grpc.stub.StreamObserver;
 import ir.poolito.pineapple.AppConstant;
 import ir.poolito.pineapple.model.Property;
 import ir.poolito.pineapple.service.GitService;
+import ir.poolito.rpc.Base;
+import ir.poolito.rpc.PineappleGrpc;
+import ir.poolito.rpc.PineappleService;
 
 import java.util.HashSet;
 import java.util.Optional;
