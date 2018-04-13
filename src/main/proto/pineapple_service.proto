@@ -4,7 +4,7 @@ option java_package = "ir.poolito.pineapple.rpc";
 
 import "base.proto";
 
-service Client {
+service Pineapple {
     rpc Echo (Message) returns (Message) {}
     rpc LoadContext (LoadContextRequest) returns (LoadContextResponse) {}
 }

@@ -13,10 +13,10 @@ import java.util.Optional;
  *
  * @author Alireza Pourtaghi
  */
-public class ClientRpc extends ClientGrpc.ClientImplBase {
+public class PineappleRpc extends PineappleGrpc.PineappleImplBase {
     private final GitService gitService;
 
-    public ClientRpc(GitService gitService) {
+    public PineappleRpc(GitService gitService) {
         this.gitService = gitService;
     }
 
@@ -27,7 +27,7 @@ public class ClientRpc extends ClientGrpc.ClientImplBase {
     }
 
     @Override
-    public void loadContext(ClientService.LoadContextRequest request, StreamObserver<ClientService.LoadContextResponse> responseObserver) {
+    public void loadContext(PineappleService.LoadContextRequest request, StreamObserver<PineappleService.LoadContextResponse> responseObserver) {
         HashSet<Property> properties = gitService.loadProperties(request.getName());
         if (properties != null) {
             Optional<Property> rpcAccessKey = properties.stream().filter(property -> property.getKey().equals(AppConstant.RPC_ACCESS_KEY_VALUE.getValue())).findFirst();
@@ -53,10 +53,10 @@ public class ClientRpc extends ClientGrpc.ClientImplBase {
      * @param properties - properties of a context that should be loaded for response
      * @return a newly created and also loaded context
      */
-    private ClientService.LoadContextResponse buildLoadContextResponse(HashSet<Property> properties) {
-        ClientService.LoadContextResponse.Builder responseBuilder = ClientService.LoadContextResponse.newBuilder();
+    private PineappleService.LoadContextResponse buildLoadContextResponse(HashSet<Property> properties) {
+        PineappleService.LoadContextResponse.Builder responseBuilder = PineappleService.LoadContextResponse.newBuilder();
         properties.forEach(property -> responseBuilder.addProperty(
-                ClientService.Property.newBuilder()
+                PineappleService.Property.newBuilder()
                         .setKey(property.getKey())
                         .setValue(property.getValue())
                         .build()

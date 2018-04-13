@@ -4,7 +4,7 @@ import com.github.lalyos.jfiglet.FigletFont;
 import io.grpc.Server;
 import io.grpc.netty.NettyServerBuilder;
 import ir.poolito.pineapple.command.Start;
-import ir.poolito.pineapple.rpc.ClientRpc;
+import ir.poolito.pineapple.rpc.PineappleRpc;
 import ir.poolito.pineapple.service.AutoClosableService;
 import ir.poolito.pineapple.service.GitService;
 import ir.poolito.pineapple.service.SchedulerService;
@@ -171,7 +171,7 @@ public class App {
                     .build()
                     .start();
         } else {
-            System.err.println("[WARN]: starting server without ssl/tls ...");
+            System.err.println("[WARNING]: starting server without ssl/tls ...");
             NettyServerBuilder nettyServerBuilder = NettyServerBuilder
                     .forAddress(new InetSocketAddress(host, port))
                     .executor(Executors.newWorkStealingPool());
@@ -188,7 +188,7 @@ public class App {
      * @param nettyServerBuilder - the server builder
      */
     private void addRpcServices(NettyServerBuilder nettyServerBuilder) {
-        nettyServerBuilder.addService(new ClientRpc(gitService));
+        nettyServerBuilder.addService(new PineappleRpc(gitService));
     }
 
     /**
