@@ -29,7 +29,7 @@ starts the server with specified options
                                 Default: localhost
   -P, --port=<port>           the port number that server should listen on
                                 Default: 9091
-  -S, --ssl                   starting server with SSL/TLS enabled
+  -S, --ssl                   starts server with SSL/TLS enabled
       --cert=<cert>           certificate chain file in PEM format
       --private-key=<pKey>    private key file in PEM format
 *     --uri=<uri>             http(s) address of remote git repository
