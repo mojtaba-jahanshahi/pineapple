@@ -149,6 +149,22 @@ public class App {
     }
 
     /**
+     * Tries to detect and check all services initialized so not equal to null.
+     */
+    private void checkServices() {
+        Arrays.stream(this.getClass().getDeclaredFields()).forEach(f -> {
+            try {
+                String nameOfField = f.getName();
+                if (nameOfField.contains("Service") && f.get(this) == null) {
+                    throw new RuntimeException(String.format("%s not initialized", nameOfField));
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        });
+    }
+
+    /**
      * Builds and starts a new gRPC server instance ready for dispatching incoming calls.
      *
      * @param host           - host to listen on
@@ -189,22 +205,6 @@ public class App {
      */
     private void addRpcServices(NettyServerBuilder nettyServerBuilder) {
         nettyServerBuilder.addService(new PineappleRpc(gitService));
-    }
-
-    /**
-     * Tries to detect and check all services initialized so not equal to null.
-     */
-    private void checkServices() {
-        Arrays.stream(this.getClass().getDeclaredFields()).forEach(f -> {
-            try {
-                String nameOfField = f.getName();
-                if (nameOfField.contains("Service") && f.get(this) == null) {
-                    throw new RuntimeException(String.format("%s not initialized", nameOfField));
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        });
     }
 
     /**
