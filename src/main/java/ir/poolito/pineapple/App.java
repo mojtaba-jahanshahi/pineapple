@@ -37,7 +37,6 @@ public class App {
             if (start.help) {
                 usage(start, System.out);
             } else {
-                app.addShutdownHook();
                 app.printBanner();
                 app.gitService = app.initializeGitService(start.uri, start.remote, start.branch, start.username, start.password);
                 app.schedulerService = app.initializeSchedulerService(app.gitService);
@@ -46,6 +45,7 @@ public class App {
                 server = app.startServer(start.host, start.port, start.ssl, start.cert, start.pKey);
                 System.out.println("[INFO]: server started successfully");
 
+                app.addShutdownHook();
                 app.awaitTermination();
             }
         } catch (Exception e) {

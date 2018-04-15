@@ -10,10 +10,10 @@ import static org.junit.Assert.assertNull;
 public class ApplicationTest {
 
     @Test
-    public void testHashAndEquals() {
-        Application first = new Application("value");
-        Application second = new Application("value");
-        Application third = new Application("anotherValue");
+    public void testEqualsAndHashCode() {
+        Application first = new Application("application");
+        Application second = new Application("application");
+        Application third = new Application("anotherApplication");
 
         ConcurrentHashMap<Application, String> concurrentHashMap = new ConcurrentHashMap<>();
         concurrentHashMap.putIfAbsent(first, "first");

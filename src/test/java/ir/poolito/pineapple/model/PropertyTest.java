@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 public class PropertyTest {
 
     @Test
-    public void testHashAndEquals() {
+    public void testEqualsAndHashCode() {
         Property first = new Property("key", "value");
         Property second = new Property("key", "anotherValue");
         Property third = new Property("anotherKey", "value");
@@ -20,6 +20,8 @@ public class PropertyTest {
         assertFalse(hashSet.add(second));
         assertTrue(hashSet.add(third));
         assertFalse(hashSet.add(fourth));
+
+        assertEquals(2, hashSet.size());
     }
 
     @Test
