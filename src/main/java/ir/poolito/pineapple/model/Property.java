@@ -25,6 +25,12 @@ public final class Property {
         return value;
     }
 
+    /**
+     * Parses a string to Property instance.
+     *
+     * @param line - string representation of a property extracted from a file
+     * @return a Property instance if line is a valid otherwise empty
+     */
     public static Optional<Property> parse(String line) {
         String[] tokens = line.split("=", -1);
         if (tokens.length == 2) {

@@ -20,7 +20,7 @@ final class Util {
      * Extracts all defined properties that are defined in specified file.
      *
      * @param file - the file that contains properties, one at a line
-     * @return set containing all properties extracted from a file
+     * @return a set containing all properties extracted from a file
      */
     static HashSet<Property> extractProperties(File file) {
         HashSet<Property> properties = new HashSet<>();

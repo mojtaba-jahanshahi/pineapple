@@ -27,7 +27,7 @@ import static picocli.CommandLine.usage;
 public class App {
     private GitService gitService;
     private SchedulerService schedulerService;
-    private static Server server;
+    private Server server;
 
     public static void main(String[] args) {
         App app = new App();
@@ -42,7 +42,7 @@ public class App {
                 app.schedulerService = app.initializeSchedulerService(app.gitService);
                 app.checkServices();
 
-                server = app.startServer(start.host, start.port, start.ssl, start.cert, start.pKey);
+                app.server = app.startServer(start.host, start.port, start.ssl, start.cert, start.pKey);
                 System.out.println("[INFO]: server started successfully");
 
                 app.addShutdownHook();
@@ -62,52 +62,6 @@ public class App {
      */
     private Start parseCommandLineArguments(String[] args) {
         return populateCommand(new Start(), args);
-    }
-
-    /**
-     * Adds JVM shutdown hook for the app instance to clean up global main services, executors and AutoClosableServices.
-     */
-    private void addShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                closeAutoClosableServices();
-            } catch (Exception e) {
-                System.err.println(String.format("[ERROR]: %s", e.getMessage()));
-            } finally {
-                shutdownServer();
-            }
-        }));
-    }
-
-    /**
-     * Tries to detect and close all AutoClosableServices when the server is shutting down.
-     */
-    private void closeAutoClosableServices() {
-        Arrays.stream(this.getClass().getDeclaredFields()).forEach(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
-            if (i.getName().equals(AutoClosableService.class.getName())) {
-                Arrays.stream(i.getMethods()).forEach(m -> {
-                    if (m.getName().equals(AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
-                        try {
-                            if (f.get(this) != null) {
-                                m.invoke(f.get(this));
-                            }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e.getMessage());
-                        }
-                    }
-                });
-            }
-        }));
-    }
-
-    /**
-     * Shutdowns the gRPC server instance.
-     */
-    private void shutdownServer() {
-        if (server != null) {
-            System.out.println("[INFO]: shutting down the server ...");
-            server.shutdown();
-        }
     }
 
     /**
@@ -205,6 +159,52 @@ public class App {
      */
     private void addRpcServices(NettyServerBuilder nettyServerBuilder) {
         nettyServerBuilder.addService(new PineappleRpc(gitService));
+    }
+
+    /**
+     * Adds JVM shutdown hook for the app instance to clean up global main services, executors and AutoClosableServices.
+     */
+    private void addShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                closeAutoClosableServices();
+            } catch (Exception e) {
+                System.err.println(String.format("[ERROR]: %s", e.getMessage()));
+            } finally {
+                shutdownServer();
+            }
+        }));
+    }
+
+    /**
+     * Tries to detect and close all AutoClosableServices when the server is shutting down.
+     */
+    private void closeAutoClosableServices() {
+        Arrays.stream(this.getClass().getDeclaredFields()).forEach(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
+            if (i.getName().equals(AutoClosableService.class.getName())) {
+                Arrays.stream(i.getMethods()).forEach(m -> {
+                    if (m.getName().equals(AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
+                        try {
+                            if (f.get(this) != null) {
+                                m.invoke(f.get(this));
+                            }
+                        } catch (Exception e) {
+                            throw new RuntimeException(e.getMessage());
+                        }
+                    }
+                });
+            }
+        }));
+    }
+
+    /**
+     * Shutdowns the gRPC server instance.
+     */
+    private void shutdownServer() {
+        if (server != null) {
+            System.out.println("[INFO]: shutting down the server ...");
+            server.shutdown();
+        }
     }
 
     /**
