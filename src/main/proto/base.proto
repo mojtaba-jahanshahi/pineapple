@@ -8,3 +8,8 @@ message Empty {
 message Message {
     string content = 1;
 }
+
+message AssociateData {
+    string key = 1;
+    string value = 2;
+}
