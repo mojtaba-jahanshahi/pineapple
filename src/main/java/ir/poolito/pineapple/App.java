@@ -70,7 +70,7 @@ public class App {
      * @throws IOException - if error occurred while printing
      */
     private void printBanner() throws IOException {
-        System.out.println(FigletFont.convertOneLine(AppConstant.BANNER_TEXT.getValue()));
+        System.out.println(FigletFont.convertOneLine(AppConstant.APP_NAME.getValue().toUpperCase()));
     }
 
     /**

@@ -8,7 +8,7 @@ public class AppConstantTest {
 
     @Test
     public void testDefaultValues() {
-        assertEquals("PINEAPPLE", AppConstant.BANNER_TEXT.getValue());
+        assertEquals("PINEAPPLE", AppConstant.APP_NAME.getValue().toUpperCase());
         assertEquals("close", AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue());
         assertEquals("/tmp/", AppConstant.REPOSITORY_BASE_DIRECTORY.getValue());
         assertEquals(".git", AppConstant.GIT_FILE_EXTENSION.getValue());
