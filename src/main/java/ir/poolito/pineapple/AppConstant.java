@@ -6,7 +6,7 @@ package ir.poolito.pineapple;
  * @author Alireza Pourtaghi
  */
 public enum AppConstant {
-    APP_NAME("PINEAPPLE"),
+    APP_NAME("pineapple"),
     AUTO_CLOSABLE_CLEANUP_METHOD_NAME("close"),
     REPOSITORY_BASE_DIRECTORY("/tmp/"),
     GIT_FILE_EXTENSION(".git"),
