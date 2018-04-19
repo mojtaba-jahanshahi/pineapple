@@ -30,7 +30,7 @@ starts the server with specified options
   -P, --port=<port>           the port number that server should listen on
                                 Default: 9091
   -S, --ssl                   starts server with SSL/TLS enabled
-      --cert=<cert>           certificate chain file in PEM format
+      --cert=<cert>           certificate chain file
       --private-key=<pKey>    private key file in PEM format
 *     --uri=<uri>             http(s) address of remote git repository
       --remote=<remote>       remote name to keep track of upstream repository
@@ -49,8 +49,6 @@ $ chmod 777 gencert.sh
 $ ./gencert.sh
 ```
 NOTE: Change the password value on gencert.sh!
-
-You can also use your own certificate files, for example generated let'sencrypt certificate for your domain in PEM format.
 
 Now start the server with options:
 ```

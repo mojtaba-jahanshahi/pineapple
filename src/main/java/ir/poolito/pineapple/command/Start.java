@@ -37,7 +37,7 @@ public class Start {
 
     @Option(
             names = {"--cert"},
-            description = "certificate chain file in PEM format"
+            description = "certificate chain file"
     )
     public File cert;
 
