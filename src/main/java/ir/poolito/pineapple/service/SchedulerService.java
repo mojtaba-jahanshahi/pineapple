@@ -29,7 +29,6 @@ public class SchedulerService implements AutoClosableService {
         scheduledExecutorService.scheduleAtFixedRate(
                 () -> {
                     try {
-                        System.out.println("[INFO]: pulling to check new updates ...");
                         PullResult pullResult = gitService.getGit()
                                 .pull()
                                 .setRemote(gitService.getRemote())
