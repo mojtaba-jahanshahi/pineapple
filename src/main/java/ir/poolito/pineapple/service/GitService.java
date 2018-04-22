@@ -80,20 +80,19 @@ public class GitService implements AutoClosableService {
     }
 
     /**
-     * Adds work tree files to applications.
+     * Loads all properties of a specific application.
      *
-     * @param files - list of work tree files
+     * @param application - the application name
+     * @return a set of all valid properties or null if application does not exists
      */
-    private void addApplications(File[] files) {
-        Arrays.stream(files)
-                .filter(file -> !file.getName().equals(AppConstant.GIT_FILE_EXTENSION.getValue()))
-                .forEach(file -> applications.putIfAbsent(new Application(file.getName()), Util.extractProperties(file)));
+    public HashSet<Property> loadProperties(String application) {
+        return applications.computeIfPresent(new Application(application), (k, v) -> v);
     }
 
     /**
      * First clears the list of current applications and then adds new work tree files to applications.
      */
-    public void updateApplications() {
+    void updateApplications() {
         File[] files = git.getRepository().getWorkTree().listFiles();
         if (files != null) {
             applications.clear();
@@ -102,13 +101,14 @@ public class GitService implements AutoClosableService {
     }
 
     /**
-     * Loads all properties of a specific application.
+     * Adds work tree files to applications.
      *
-     * @param application - the application name
-     * @return a set of all valid properties or null if application does not exists
+     * @param files - list of work tree files
      */
-    public HashSet<Property> loadProperties(String application) {
-        return applications.computeIfPresent(new Application(application), (k, v) -> v);
+    private void addApplications(File[] files) {
+        Arrays.stream(files)
+                .filter(file -> !file.getName().equals(AppConstant.GIT_FILE_EXTENSION.getValue()))
+                .forEach(file -> applications.putIfAbsent(new Application(file.getName()), Util.extractProperties(file)));
     }
 
     @Override
