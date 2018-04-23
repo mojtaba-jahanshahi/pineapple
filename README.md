@@ -21,7 +21,7 @@ $ ./pineapple --help
 
 ```
 Usage: <main class> [-hS] [--branch=<branch>] [--cert=<cert>]
-                    --password=<password> [--private-key=<pKey>]
+                    --password=<password> [--private-key=<privateKey>]
                     [--remote=<remote>] --uri=<uri> --username=<username>
                     [-H=<host>] [-P=<port>]
 starts the server with specified options
@@ -31,7 +31,8 @@ starts the server with specified options
                                 Default: 9091
   -S, --ssl                   starts server with SSL/TLS enabled
       --cert=<cert>           certificate chain file
-      --private-key=<pKey>    private key file in PEM format
+      --private-key=<privateKey>
+                              private key file in PEM format
 *     --uri=<uri>             http(s) address of remote git repository
       --remote=<remote>       remote name to keep track of upstream repository
                                 Default: origin
