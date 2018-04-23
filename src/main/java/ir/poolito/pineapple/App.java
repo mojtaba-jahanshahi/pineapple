@@ -13,9 +13,10 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static picocli.CommandLine.populateCommand;
 import static picocli.CommandLine.usage;
@@ -181,21 +182,24 @@ public class App {
      * Tries to detect and close all AutoClosableServices when the server is shutting down.
      */
     private void closeAutoClosableServices() {
-        Arrays.stream(this.getClass().getDeclaredFields()).sorted(Collections.reverseOrder()).forEach(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
-            if (i.getName().equals(AutoClosableService.class.getName())) {
-                Arrays.stream(i.getMethods()).forEach(m -> {
-                    if (m.getName().equals(AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
-                        try {
-                            if (f.get(this) != null) {
-                                m.invoke(f.get(this));
+        Arrays.stream(this.getClass().getDeclaredFields())
+                .collect(Collectors.toCollection(ArrayDeque::new))
+                .descendingIterator()
+                .forEachRemaining(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
+                    if (i.getName().equals(AutoClosableService.class.getName())) {
+                        Arrays.stream(i.getMethods()).forEach(m -> {
+                            if (m.getName().equals(AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
+                                try {
+                                    if (f.get(this) != null) {
+                                        m.invoke(f.get(this));
+                                    }
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e.getMessage());
+                                }
                             }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e.getMessage());
-                        }
+                        });
                     }
-                });
-            }
-        }));
+                }));
     }
 
     /**
