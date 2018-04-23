@@ -45,7 +45,7 @@ public class Start {
             names = {"--private-key"},
             description = "private key file in PEM format"
     )
-    public File pKey;
+    public File privateKey;
 
     @Option(
             names = {"--uri"},

@@ -15,12 +15,11 @@ public class StartTest {
 
         assertFalse(start.ssl);
         assertNull(start.cert);
-        assertNull(start.pKey);
+        assertNull(start.privateKey);
 
         assertNull(start.uri);
         assertEquals("origin", start.remote);
         assertEquals("master", start.branch);
-
         assertNull(start.username);
         assertNull(start.password);
 

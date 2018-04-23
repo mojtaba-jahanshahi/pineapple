@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.Executors;
 
 import static picocli.CommandLine.populateCommand;
@@ -42,7 +43,7 @@ public class App {
                 app.schedulerService = app.initializeSchedulerService(app.gitService);
                 app.checkServices();
 
-                app.server = app.startServer(start.host, start.port, start.ssl, start.cert, start.pKey);
+                app.server = app.startServer(start.host, start.port, start.ssl, start.cert, start.privateKey);
                 System.out.println("[INFO]: server started successfully");
 
                 app.addShutdownHook();
@@ -124,7 +125,7 @@ public class App {
      * @param host           - host to listen on
      * @param port           - port number to listen on
      * @param ssl            - whether the server should start with ssl/tls or not
-     * @param certChainFile  - certificate chain file in PEM format
+     * @param certChainFile  - certificate chain file
      * @param privateKeyFile - private key file in PEM format
      * @return gRPC server instance
      * @throws Exception - if start failed
@@ -180,7 +181,7 @@ public class App {
      * Tries to detect and close all AutoClosableServices when the server is shutting down.
      */
     private void closeAutoClosableServices() {
-        Arrays.stream(this.getClass().getDeclaredFields()).forEach(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
+        Arrays.stream(this.getClass().getDeclaredFields()).sorted(Collections.reverseOrder()).forEach(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
             if (i.getName().equals(AutoClosableService.class.getName())) {
                 Arrays.stream(i.getMethods()).forEach(m -> {
                     if (m.getName().equals(AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
@@ -208,7 +209,7 @@ public class App {
     }
 
     /**
-     * Waits for the gRPC server to shutdown so this method blocks the main thread.
+     * Waits for the gRPC server to shutdown, so this method blocks the main thread.
      */
     private void awaitTermination() throws InterruptedException {
         if (server != null) {

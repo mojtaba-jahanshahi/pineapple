@@ -4,7 +4,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 
 /**
- * Utility methods for use in gRPC services.
+ * Utility methods for use in rpc services.
  *
  * @author Alireza Pourtaghi
  */

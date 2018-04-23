@@ -33,9 +33,9 @@ public class PineappleRpc extends PineappleGrpc.PineappleImplBase {
     public void loadContext(PineappleService.LoadContextRequest request, StreamObserver<PineappleService.LoadContextResponse> responseObserver) {
         HashSet<Property> properties = gitService.loadProperties(request.getName());
         if (properties != null) {
-            Optional<Property> rpcAccessKey = properties.stream().filter(property -> property.getKey().equals(AppConstant.RPC_ACCESS_KEY_VALUE.getValue())).findFirst();
-            if (rpcAccessKey.isPresent()) {
-                if (rpcAccessKey.get().getValue().equals(request.getAccessKey())) {
+            Optional<Property> optionalProperty = properties.stream().filter(property -> property.getKey().equals(AppConstant.RPC_ACCESS_KEY_VALUE.getValue())).findFirst();
+            if (optionalProperty.isPresent()) {
+                if (optionalProperty.get().getValue().equals(request.getAccessKey())) {
                     responseObserver.onNext(buildLoadContextResponse(properties));
                     responseObserver.onCompleted();
                 } else {
@@ -54,7 +54,7 @@ public class PineappleRpc extends PineappleGrpc.PineappleImplBase {
      * Builds a new LoadContextResponse.
      *
      * @param properties - properties of a context that should be loaded for response
-     * @return a newly created and also loaded context
+     * @return a newly created and also loaded context response
      */
     private PineappleService.LoadContextResponse buildLoadContextResponse(HashSet<Property> properties) {
         PineappleService.LoadContextResponse.Builder responseBuilder = PineappleService.LoadContextResponse.newBuilder();
