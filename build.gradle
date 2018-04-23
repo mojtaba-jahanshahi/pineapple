@@ -8,17 +8,16 @@ plugins {
 }
 
 group = 'ir.poolito'
-version = '0.0.1'
+version = '0.1'
 description = 'Configuration server based on gRPC'
 
 mainClassName = 'ir.poolito.pineapple.App'
 
 dependencies {
-    compile 'com.google.guava:guava:23.0'
-
     compile 'io.grpc:grpc-netty:1.11.0'
     compile 'io.grpc:grpc-protobuf:1.11.0'
     compile 'io.grpc:grpc-stub:1.11.0'
+
     compile 'io.netty:netty-tcnative-boringssl-static:2.0.8.Final'
 
     compile 'org.eclipse.jgit:org.eclipse.jgit:4.11.0.201803080745-r'

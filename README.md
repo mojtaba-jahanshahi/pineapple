@@ -43,12 +43,12 @@ starts the server with specified options
 ```
 
 ## SSL/TLS setup
-Copy and paste script/gencert.sh script file on some appropriate directory (exp. ~/certs), then:
+Copy and paste gencerts.sh script file on some appropriate directory (exp. ~/certs), then:
 ```
-$ chmod 777 gencert.sh
-$ ./gencert.sh
+$ chmod 777 gencerts.sh
+$ ./gencerts.sh
 ```
-NOTE: Change the password value on gencert.sh!
+NOTE: Change the password value on gencerts.sh!
 
 Now start the server with options:
 ```
