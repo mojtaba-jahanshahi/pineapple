@@ -132,12 +132,15 @@ public class App {
     private Server startServer(String host, int port, boolean ssl, File certChainFile, File privateKeyFile) throws Exception {
         if (ssl && certChainFile != null && privateKeyFile != null) {
             System.out.println("[INFO]: starting server with ssl/tls enabled ...");
-            NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port)).useTransportSecurity(certChainFile, privateKeyFile).executor(Executors.newWorkStealingPool());
+            NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
+                    .useTransportSecurity(certChainFile, privateKeyFile)
+                    .executor(Executors.newWorkStealingPool());
             addRpcServices(nettyServerBuilder);
             return nettyServerBuilder.build().start();
         } else {
             System.err.println("[WARNING]: starting server without ssl/tls ...");
-            NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port)).executor(Executors.newWorkStealingPool());
+            NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
+                    .executor(Executors.newWorkStealingPool());
             addRpcServices(nettyServerBuilder);
             return nettyServerBuilder.build().start();
         }
@@ -171,21 +174,24 @@ public class App {
      * Tries to detect and close all AutoClosableServices when the server is shutting down.
      */
     private void closeAutoClosableServices() {
-        Arrays.stream(this.getClass().getDeclaredFields()).collect(Collectors.toCollection(ArrayDeque::new)).descendingIterator().forEachRemaining(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
-            if (i.getName().equals(AutoClosableService.class.getName())) {
-                Arrays.stream(i.getMethods()).forEach(m -> {
-                    if (m.getName().equals(AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
-                        try {
-                            if (f.get(this) != null) {
-                                m.invoke(f.get(this));
+        Arrays.stream(this.getClass().getDeclaredFields())
+                .collect(Collectors.toCollection(ArrayDeque::new))
+                .descendingIterator()
+                .forEachRemaining(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
+                    if (i.getName().equals(AutoClosableService.class.getName())) {
+                        Arrays.stream(i.getMethods()).forEach(m -> {
+                            if (m.getName().equals(AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
+                                try {
+                                    if (f.get(this) != null) {
+                                        m.invoke(f.get(this));
+                                    }
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e.getMessage());
+                                }
                             }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e.getMessage());
-                        }
+                        });
                     }
-                });
-            }
-        }));
+                }));
     }
 
     /**
