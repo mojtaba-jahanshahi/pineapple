@@ -8,10 +8,8 @@ import ir.poolito.pineapple.rpc.PineappleRpc;
 import ir.poolito.pineapple.service.AutoClosableService;
 import ir.poolito.pineapple.service.GitService;
 import ir.poolito.pineapple.service.SchedulerService;
-import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -69,9 +67,9 @@ public class App {
     /**
      * Prints the provided text as a banner when starting the server.
      *
-     * @throws IOException - if error occurred while printing
+     * @throws Exception - if error occurred while printing
      */
-    private void printBanner() throws IOException {
+    private void printBanner() throws Exception {
         System.out.println(FigletFont.convertOneLine(AppConstant.APP_NAME.getValue().toUpperCase()));
     }
 
@@ -84,9 +82,9 @@ public class App {
      * @param username - username that has access to remote git repository
      * @param password - the password of provided username
      * @return newly created git service
-     * @throws GitAPIException - if exception occurred while cloning repository
+     * @throws Exception - if exception occurred while cloning repository
      */
-    private GitService initializeGitService(String uri, String remote, String branch, String username, String password) throws GitAPIException {
+    private GitService initializeGitService(String uri, String remote, String branch, String username, String password) throws Exception {
         GitService gitService = new GitService(uri, remote, branch, username, password);
         gitService.start();
         return gitService;
@@ -134,23 +132,14 @@ public class App {
     private Server startServer(String host, int port, boolean ssl, File certChainFile, File privateKeyFile) throws Exception {
         if (ssl && certChainFile != null && privateKeyFile != null) {
             System.out.println("[INFO]: starting server with ssl/tls enabled ...");
-            NettyServerBuilder nettyServerBuilder = NettyServerBuilder
-                    .forAddress(new InetSocketAddress(host, port))
-                    .useTransportSecurity(certChainFile, privateKeyFile)
-                    .executor(Executors.newWorkStealingPool());
+            NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port)).useTransportSecurity(certChainFile, privateKeyFile).executor(Executors.newWorkStealingPool());
             addRpcServices(nettyServerBuilder);
-            return nettyServerBuilder
-                    .build()
-                    .start();
+            return nettyServerBuilder.build().start();
         } else {
             System.err.println("[WARNING]: starting server without ssl/tls ...");
-            NettyServerBuilder nettyServerBuilder = NettyServerBuilder
-                    .forAddress(new InetSocketAddress(host, port))
-                    .executor(Executors.newWorkStealingPool());
+            NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port)).executor(Executors.newWorkStealingPool());
             addRpcServices(nettyServerBuilder);
-            return nettyServerBuilder
-                    .build()
-                    .start();
+            return nettyServerBuilder.build().start();
         }
     }
 
@@ -182,24 +171,21 @@ public class App {
      * Tries to detect and close all AutoClosableServices when the server is shutting down.
      */
     private void closeAutoClosableServices() {
-        Arrays.stream(this.getClass().getDeclaredFields())
-                .collect(Collectors.toCollection(ArrayDeque::new))
-                .descendingIterator()
-                .forEachRemaining(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
-                    if (i.getName().equals(AutoClosableService.class.getName())) {
-                        Arrays.stream(i.getMethods()).forEach(m -> {
-                            if (m.getName().equals(AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
-                                try {
-                                    if (f.get(this) != null) {
-                                        m.invoke(f.get(this));
-                                    }
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e.getMessage());
-                                }
+        Arrays.stream(this.getClass().getDeclaredFields()).collect(Collectors.toCollection(ArrayDeque::new)).descendingIterator().forEachRemaining(f -> Arrays.stream(f.getType().getInterfaces()).forEach(i -> {
+            if (i.getName().equals(AutoClosableService.class.getName())) {
+                Arrays.stream(i.getMethods()).forEach(m -> {
+                    if (m.getName().equals(AppConstant.AUTO_CLOSABLE_CLEANUP_METHOD_NAME.getValue())) {
+                        try {
+                            if (f.get(this) != null) {
+                                m.invoke(f.get(this));
                             }
-                        });
+                        } catch (Exception e) {
+                            throw new RuntimeException(e.getMessage());
+                        }
                     }
-                }));
+                });
+            }
+        }));
     }
 
     /**

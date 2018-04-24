@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 /**
- * Basic functionality for clients of this config server.
+ * Basic functionality for clients of this rpc service.
  *
  * @author Alireza Pourtaghi
  */
@@ -58,12 +58,7 @@ public class PineappleRpc extends PineappleGrpc.PineappleImplBase {
      */
     private PineappleService.LoadContextResponse buildLoadContextResponse(HashSet<Property> properties) {
         PineappleService.LoadContextResponse.Builder responseBuilder = PineappleService.LoadContextResponse.newBuilder();
-        properties.forEach(property -> responseBuilder.addProperty(
-                PineappleService.Property.newBuilder()
-                        .setKey(property.getKey())
-                        .setValue(property.getValue())
-                        .build()
-        ));
+        properties.forEach(property -> responseBuilder.addProperty(PineappleService.Property.newBuilder().setKey(property.getKey()).setValue(property.getValue()).build()));
         return responseBuilder.build();
     }
 }

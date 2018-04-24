@@ -5,7 +5,6 @@ import ir.poolito.pineapple.model.Application;
 import ir.poolito.pineapple.model.Property;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import java.io.File;
@@ -14,7 +13,7 @@ import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Git service implementation that provides access to remote git repository and other useful functionality.
+ * Git service that provides access to remote git repository and other useful functionality.
  *
  * @author Alireza Pourtaghi
  */
@@ -63,9 +62,9 @@ public class GitService implements AutoClosableService {
     /**
      * Clones a remote git repository and extracts all available files to read application specific properties.
      *
-     * @throws GitAPIException - if exception occurred while cloning repository
+     * @throws Exception - if exception occurred while cloning repository
      */
-    public void start() throws GitAPIException {
+    public void start() throws Exception {
         CloneCommand cloneCommand = Git.cloneRepository()
                 .setURI(uri)
                 .setRemote(remote)

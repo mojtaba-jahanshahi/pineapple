@@ -28,7 +28,7 @@ public final class Property {
     /**
      * Parses a string to Property instance.
      *
-     * @param line - string representation of a property extracted from a file
+     * @param line - string representation of a property
      * @return a Property instance if line is valid otherwise empty
      */
     public static Optional<Property> parse(String line) {
