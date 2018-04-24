@@ -26,6 +26,7 @@ public class ApplicationTest {
         assertEquals("third", concurrentHashMap.get(third));
 
         concurrentHashMap.remove(second);
+
         assertEquals(1, concurrentHashMap.size());
         assertNull(concurrentHashMap.get(first));
         assertNull(concurrentHashMap.get(second));
