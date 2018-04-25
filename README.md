@@ -2,12 +2,6 @@
 
 A configuration server used in micro services environment.
 
-## Features
-    - Reads configurations from remote git repositories.
-    - Supports multiple applications.
-    - Reloads configurations without restarting the server with automatic scheduled upstream checking.
-    - SSL/TLS support.
-
 ## Building the project
 ```
 $ gradle clean installDist
