@@ -124,16 +124,16 @@ public class App {
      * @param host           - host to listen on
      * @param port           - port number to listen on
      * @param ssl            - whether the server should start with ssl/tls or not
-     * @param certChainFile  - certificate chain file
+     * @param certFile       - certificate chain file
      * @param privateKeyFile - private key file in PEM format
      * @return gRPC server instance
      * @throws Exception - if start failed
      */
-    private Server startServer(String host, int port, boolean ssl, File certChainFile, File privateKeyFile) throws Exception {
-        if (ssl && certChainFile != null && privateKeyFile != null) {
+    private Server startServer(String host, int port, boolean ssl, File certFile, File privateKeyFile) throws Exception {
+        if (ssl && certFile != null && privateKeyFile != null) {
             System.out.println("[INFO]: starting server with ssl/tls enabled ...");
             NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
-                    .useTransportSecurity(certChainFile, privateKeyFile)
+                    .useTransportSecurity(certFile, privateKeyFile)
                     .executor(Executors.newWorkStealingPool());
             addRpcServices(nettyServerBuilder);
             return nettyServerBuilder.build().start();

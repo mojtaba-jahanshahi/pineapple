@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 final class Util {
 
     /**
-     * Extracts all defined properties defined in specified file.
+     * Extracts all properties defined in specified file.
      *
      * @param file - the file that contains properties, one at a line
      * @return a set containing all properties extracted from a file
