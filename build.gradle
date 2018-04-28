@@ -14,6 +14,8 @@ description = 'Configuration server based on gRPC'
 mainClassName = 'ir.poolito.pineapple.App'
 
 dependencies {
+    compile 'com.google.guava:guava:23.0'
+
     compile 'io.grpc:grpc-netty:1.11.0'
     compile 'io.grpc:grpc-protobuf:1.11.0'
     compile 'io.grpc:grpc-stub:1.11.0'
