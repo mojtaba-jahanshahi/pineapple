@@ -13,7 +13,6 @@ import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static picocli.CommandLine.populateCommand;
@@ -134,13 +133,13 @@ public class App {
             System.out.println("[INFO]: starting server with ssl/tls enabled ...");
             NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
                     .useTransportSecurity(certFile, privateKeyFile)
-                    .executor(Executors.newWorkStealingPool());
+                    .directExecutor();
             addRpcServices(nettyServerBuilder);
             return nettyServerBuilder.build().start();
         } else {
             System.err.println("[WARNING]: starting server without ssl/tls ...");
             NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
-                    .executor(Executors.newWorkStealingPool());
+                    .directExecutor();
             addRpcServices(nettyServerBuilder);
             return nettyServerBuilder.build().start();
         }
