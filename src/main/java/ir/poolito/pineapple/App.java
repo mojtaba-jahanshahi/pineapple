@@ -159,12 +159,11 @@ public class App {
      */
     private void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            shutdownServer();
             try {
                 closeAutoClosableServices();
             } catch (Exception e) {
                 System.err.println(String.format("[ERROR]: %s", e.getMessage()));
-            } finally {
-                shutdownServer();
             }
         }));
     }
