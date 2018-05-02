@@ -27,6 +27,8 @@ dependencies {
     compile 'info.picocli:picocli:2.3.0'
     compile 'com.github.lalyos:jfiglet:0.0.8'
 
+    compile 'org.slf4j:slf4j-simple:1.7.25'
+
     testCompile 'junit:junit:4.12'
 }
 
