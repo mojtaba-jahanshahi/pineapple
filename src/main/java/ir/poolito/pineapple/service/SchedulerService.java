@@ -23,14 +23,13 @@ public class SchedulerService implements AutoClosableService {
     }
 
     /**
-     * Initializes the service for periodically check of remote git repository.
+     * Initializes the service for periodically check changes of remote git repository.
      */
     public void start() {
         scheduledExecutorService.scheduleAtFixedRate(
                 () -> {
                     try {
-                        PullResult pullResult = gitService.getGit()
-                                .pull()
+                        PullResult pullResult = gitService.getGit().pull()
                                 .setRemote(gitService.getRemote())
                                 .setRemoteBranchName(gitService.getBranch())
                                 .setCredentialsProvider(new UsernamePasswordCredentialsProvider(gitService.getUsername(), gitService.getPassword()))

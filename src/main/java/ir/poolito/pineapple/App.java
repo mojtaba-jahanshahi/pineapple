@@ -78,7 +78,7 @@ public class App {
      * @param uri      - http(s) address of remote git repository
      * @param remote   - remote name to keep track of upstream repository
      * @param branch   - branch name to read configuration files from
-     * @param username - username that has access to remote git repository
+     * @param username - the username that has access to remote git repository
      * @param password - the password of provided username
      * @return newly created git service
      * @throws Exception - if exception occurred while cloning repository

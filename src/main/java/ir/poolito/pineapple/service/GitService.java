@@ -18,13 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Alireza Pourtaghi
  */
 public class GitService implements AutoClosableService {
-    private Git git;
     private final String uri;
     private final String remote;
     private final String branch;
     private final String username;
     private final String password;
     private final ConcurrentHashMap<Application, HashSet<Property>> applications;
+    private Git git;
 
     public GitService(String uri, String remote, String branch, String username, String password) {
         this.uri = uri;
@@ -33,14 +33,6 @@ public class GitService implements AutoClosableService {
         this.username = username;
         this.password = password;
         this.applications = new ConcurrentHashMap<>();
-    }
-
-    Git getGit() {
-        return git;
-    }
-
-    String getUri() {
-        return uri;
     }
 
     String getRemote() {
@@ -57,6 +49,10 @@ public class GitService implements AutoClosableService {
 
     String getPassword() {
         return password;
+    }
+
+    Git getGit() {
+        return git;
     }
 
     /**

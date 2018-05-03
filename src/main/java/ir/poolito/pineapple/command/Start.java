@@ -69,7 +69,7 @@ public class Start {
     @Option(
             names = {"--username"},
             required = true,
-            description = "username that has access to remote git repository"
+            description = "the username that has access to remote git repository"
     )
     public String username;
 
