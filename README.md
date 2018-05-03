@@ -1,6 +1,6 @@
 # Pineapple
 
-A configuration server used in micro services environment.
+Configuration server for use in micro services environment based on gRPC.
 
 ## Building the project
 ```

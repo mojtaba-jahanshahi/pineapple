@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'idea'
+    id 'eclipse'
 
     id 'com.google.osdetector' version '1.4.0'
     id 'com.google.protobuf' version '0.8.5'
