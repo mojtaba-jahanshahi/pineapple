@@ -31,7 +31,7 @@ public class Start {
 
     @Option(
             names = {"-S", "--ssl"},
-            description = "starts server with SSL/TLS enabled"
+            description = "whether the server should start with ssl/tls or not"
     )
     public boolean ssl = false;
 

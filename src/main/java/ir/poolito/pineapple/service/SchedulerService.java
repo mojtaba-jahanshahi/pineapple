@@ -18,18 +18,19 @@ public class SchedulerService implements AutoClosableService {
     private final GitService gitService;
 
     public SchedulerService(GitService gitService) {
-        this.scheduledExecutorService = Executors.newScheduledThreadPool(Integer.valueOf(AppConstant.SCHEDULER_POOL_SIZE.getValue()));
+        this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.gitService = gitService;
     }
 
     /**
-     * Initializes the service for periodically check changes of remote git repository.
+     * Initializes the service for periodically checking of remote git repository changes.
      */
     public void start() {
         scheduledExecutorService.scheduleAtFixedRate(
                 () -> {
                     try {
-                        PullResult pullResult = gitService.getGit().pull()
+                        PullResult pullResult = gitService.getGit()
+                                .pull()
                                 .setRemote(gitService.getRemote())
                                 .setRemoteBranchName(gitService.getBranch())
                                 .setCredentialsProvider(new UsernamePasswordCredentialsProvider(gitService.getUsername(), gitService.getPassword()))

@@ -23,7 +23,8 @@ starts the server with specified options
                                 Default: localhost
   -P, --port=<port>           the port number that server should listen on
                                 Default: 9091
-  -S, --ssl                   starts server with SSL/TLS enabled
+  -S, --ssl                   whether the server should start with ssl/tls or
+                                not
       --cert=<cert>           certificate chain file
       --private-key=<privateKey>
                               private key file in PEM format
@@ -32,7 +33,8 @@ starts the server with specified options
                                 Default: origin
       --branch=<branch>       branch name to read configuration files from
                                 Default: master
-*     --username=<username>   username that has access to remote git repository
+*     --username=<username>   the username that has access to remote git
+                                repository
 *     --password=<password>   the password of provided username
   -h, --help                  display usage help and exit
 ```

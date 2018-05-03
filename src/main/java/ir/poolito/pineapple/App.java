@@ -120,8 +120,8 @@ public class App {
     /**
      * Builds and starts a new gRPC server instance ready for dispatching incoming calls.
      *
-     * @param host           - host to listen on
-     * @param port           - port number to listen on
+     * @param host           - the host name that server should listen on
+     * @param port           - the port number that server should listen on
      * @param ssl            - whether the server should start with ssl/tls or not
      * @param certFile       - certificate chain file
      * @param privateKeyFile - private key file in PEM format
