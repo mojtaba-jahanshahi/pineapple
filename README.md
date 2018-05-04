@@ -10,6 +10,9 @@ Configuration server for use in micro services environment based on gRPC.
     . Automatic scheduled upstream change check to update applications.
     . Supports SSL/TLS.
 
+## High availability and load balancing
+High availability and load balancing can be achieved by tools like https://www.envoyproxy.io or https://traefik.io.
+
 ## Building the project
 ```
 $ gradle clean installDist
