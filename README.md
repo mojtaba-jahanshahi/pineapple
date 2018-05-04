@@ -2,6 +2,14 @@
 
 Configuration server for use in micro services environment based on gRPC.
 
+## Features
+    . Reads configuration files from remote git repository.
+    . Supports multiple applications, with each application's configuration on separate file definition.
+    . Ability to provide upstream repository name and branch name (prod, test, dev).
+    . RPC access key support to force clients to provide access key before getting configuration properties.
+    . Automatic scheduled upstream change check to update applications.
+    . Supports SSL/TLS.
+
 ## Building the project
 ```
 $ gradle clean installDist
