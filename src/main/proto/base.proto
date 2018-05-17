@@ -13,3 +13,8 @@ message AssociateData {
     string key = 1;
     string value = 2;
 }
+
+message PagedRequest {
+    int32 pageNumber = 1;
+    int32 pageSize = 2;
+}
