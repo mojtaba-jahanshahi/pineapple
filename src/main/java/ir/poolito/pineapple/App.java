@@ -1,18 +1,23 @@
 package ir.poolito.pineapple;
 
 import com.github.lalyos.jfiglet.FigletFont;
-import io.grpc.Server;
-import io.grpc.netty.NettyServerBuilder;
+import com.linecorp.armeria.common.grpc.GrpcSerializationFormats;
+import com.linecorp.armeria.server.Server;
+import com.linecorp.armeria.server.ServerBuilder;
+import com.linecorp.armeria.server.grpc.GrpcServiceBuilder;
+import io.grpc.BindableService;
 import ir.poolito.pineapple.command.Start;
+import ir.poolito.pineapple.internal.ServerOption;
 import ir.poolito.pineapple.rpc.PineappleRpc;
 import ir.poolito.pineapple.service.AutoClosableService;
 import ir.poolito.pineapple.service.GitService;
 import ir.poolito.pineapple.service.SchedulerService;
 
-import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static picocli.CommandLine.populateCommand;
@@ -26,6 +31,7 @@ import static picocli.CommandLine.usage;
 public class App {
     private GitService gitService;
     private SchedulerService schedulerService;
+    private ExecutorService serverExecutor;
     private Server server;
 
     public static void main(String[] args) {
@@ -37,11 +43,12 @@ public class App {
                 usage(start, System.out);
             } else {
                 app.printBanner();
+                app.serverExecutor = app.initExecutorService(start.threads);
                 app.gitService = app.initializeGitService(start.uri, start.remote, start.branch, start.username, start.password);
                 app.schedulerService = app.initializeSchedulerService(app.gitService);
                 app.checkServices();
 
-                app.server = app.startServer(start.host, start.port, start.ssl, start.cert, start.privateKey);
+                app.server = app.startServer(ServerOption.from(start));
                 System.out.println("[INFO]: server started successfully");
 
                 app.addShutdownHook();
@@ -70,6 +77,10 @@ public class App {
      */
     private void printBanner() throws Exception {
         System.out.println(FigletFont.convertOneLine(AppConstant.APP_NAME.getValue().toUpperCase()));
+    }
+
+    private ExecutorService initExecutorService(int threadNum) {
+        return Executors.newWorkStealingPool(threadNum);
     }
 
     /**
@@ -120,38 +131,48 @@ public class App {
     /**
      * Builds and starts a new gRPC server instance ready for dispatching incoming calls.
      *
-     * @param host           - the host name that server should listen on
-     * @param port           - the port number that server should listen on
-     * @param ssl            - whether the server should start with ssl/tls or not
-     * @param certFile       - certificate chain file
-     * @param privateKeyFile - private key file in PEM format
+     * @param serverOption - options that used for creating new server.
      * @return gRPC server instance
      * @throws Exception - if start failed
      */
-    private Server startServer(String host, int port, boolean ssl, File certFile, File privateKeyFile) throws Exception {
-        if (ssl && certFile != null && privateKeyFile != null) {
+    private Server startServer(ServerOption serverOption) throws Exception {
+        final ServerBuilder serverBuilder = new ServerBuilder();
+
+        if (serverOption.isSsl() && serverOption.getCertFile() != null && serverOption.getPrivateKeyFile() != null) {
             System.out.println("[INFO]: starting server with ssl/tls enabled ...");
-            NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
-                    .useTransportSecurity(certFile, privateKeyFile)
-                    .directExecutor();
-            addRpcServices(nettyServerBuilder);
-            return nettyServerBuilder.build().start();
+            serverBuilder.https(new InetSocketAddress(serverOption.getHost(), serverOption.getPort()))
+                    .tls(serverOption.getCertFile(), serverOption.getPrivateKeyFile());
         } else {
             System.err.println("[WARNING]: starting server without ssl/tls ...");
-            NettyServerBuilder nettyServerBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
-                    .directExecutor();
-            addRpcServices(nettyServerBuilder);
-            return nettyServerBuilder.build().start();
+            serverBuilder.http(new InetSocketAddress(serverOption.getHost(), serverOption.getPort()));
         }
+        serverBuilder.blockingTaskExecutor(serverExecutor);
+
+        addRpcServices(serverBuilder);
+
+        return serverBuilder.build();
     }
 
     /**
      * Adds all needed rpc services to the gRPC server.
      *
-     * @param nettyServerBuilder - the server builder
+     * @param serverBuilder - the server builder
      */
-    private void addRpcServices(NettyServerBuilder nettyServerBuilder) {
-        nettyServerBuilder.addService(new PineappleRpc(gitService));
+    private void addRpcServices(ServerBuilder serverBuilder) {
+        serverBuilder
+                .service(newGrpcServiceBuilder(new PineappleRpc(gitService)).build());
+    }
+
+    /**
+     * Create new {@code GrpcServiceBuilder} for given {@code BindableService}.
+     *
+     * @param service - grpc service
+     */
+    private GrpcServiceBuilder newGrpcServiceBuilder(BindableService service) {
+        final GrpcServiceBuilder grpcServiceBuilder = new GrpcServiceBuilder()
+                .useBlockingTaskExecutor(false)
+                .enableUnframedRequests(true);
+        return grpcServiceBuilder.addService(service);
     }
 
     /**
@@ -198,7 +219,7 @@ public class App {
     private void shutdownServer() {
         if (server != null) {
             System.out.println("[INFO]: shutting down the server ...");
-            server.shutdown();
+            server.stop().join();
         }
     }
 
@@ -207,7 +228,7 @@ public class App {
      */
     private void awaitTermination() throws InterruptedException {
         if (server != null) {
-            server.awaitTermination();
+            server.start().join();
         }
     }
 }

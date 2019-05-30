@@ -48,6 +48,12 @@ public class Start {
     public File privateKey;
 
     @Option(
+            names = {"--threads"},
+            description = "number of threads to use in server for handling incoming calls"
+    )
+    public int threads = 2 * Runtime.getRuntime().availableProcessors();
+
+    @Option(
             names = {"--uri"},
             required = true,
             description = "http(s) address of remote git repository"
